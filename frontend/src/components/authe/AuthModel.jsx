@@ -1,19 +1,77 @@
-function OldLogin({
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {signup,login,} from "../../services/auth/AuthServices.js";
+
+function AuthModal({
   closeAuth,
-  handleAuthSubmit,
-  handleInputChange,
-  formData,
   authMode,
   setAuthMode,
+  setIsLoggedIn,
 }) {
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setErrorMessage("");
+
+  };
+
+  const handleAuthSubmit = (event) => {
+    event.preventDefault();
+
+    setErrorMessage("");
+
+    if (authMode === "signup") {
+     
+      signup({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      });
+    } else {
+      login(formData.email, formData.password);
+    }
+    
+
+    // Login / signup successful
+    setIsLoggedIn(true);
+
+    closeAuth();
+
+    navigate("/resume");
+
+    setFormData({
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+  }
+
   return (
     <div className="auth-modal-overlay" onClick={closeAuth}>
-      <div className="auth-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="auth-modal"
+        onClick={(event) => event.stopPropagation()}
+      >
         <button
           className="close-auth"
           type="button"
           onClick={closeAuth}
-          aria-label="Close login form"
+          aria-label="Close authentication form"
         >
           ×
         </button>
@@ -23,7 +81,10 @@ function OldLogin({
           <button
             type="button"
             className={authMode === "login" ? "active" : ""}
-            onClick={() => setAuthMode("login")}
+              onClick={() => {
+              setAuthMode("login");
+              setErrorMessage("");
+            }}
           >
             Login
           </button>
@@ -31,7 +92,10 @@ function OldLogin({
           <button
             type="button"
             className={authMode === "signup" ? "active" : ""}
-            onClick={() => setAuthMode("signup")}
+            onClick={() => {
+              setAuthMode("signup");
+              setErrorMessage("");
+            }}
           >
             Sign Up
           </button>
@@ -82,7 +146,9 @@ function OldLogin({
 
           {authMode === "signup" && (
             <div className="form-group">
-              <label htmlFor="confirmPasswordId">Confirm Password</label>
+              <label htmlFor="confirmPasswordId">
+                Confirm Password
+              </label>
 
               <input
                 id="confirmPasswordId"
@@ -93,6 +159,12 @@ function OldLogin({
                 onChange={handleInputChange}
               />
             </div>
+          )}
+
+          {errorMessage && (
+            <p className="auth-error">
+              {errorMessage}
+            </p>
           )}
 
           <button type="submit" className="auth-submit">
@@ -108,7 +180,9 @@ function OldLogin({
           <button
             type="button"
             onClick={() =>
-              setAuthMode(authMode === "login" ? "signup" : "login")
+              setAuthMode(
+                authMode === "login" ? "signup" : "login"
+              )
             }
           >
             {authMode === "login" ? "Sign Up" : "Login"}
@@ -119,4 +193,4 @@ function OldLogin({
   );
 }
 
-export default OldLogin;
+export default AuthModal;

@@ -1,28 +1,40 @@
-import OldLogin from "../components/authe/OldLogin.jsx";
+import AuthModel from "../components/authe/AuthModel.jsx";
 import Navbar from "../components/navbar/Navbar.jsx";
 import FloatingIcons from "../components/hero/FloatingIcons.jsx";
-import Herosection from "../components/hero/Herosection.jsx";
+import HeroSection from "../components/hero/HeroSection.jsx";
 import RoadmapCards from "../components/hero/RoadmapCards.jsx";
-function HomePage({openAuth,  isAuthOpen,closeAuth,  handleAuthSubmit,  handleInputChange,formData,authMode,setAuthMode,}) {
+
+import { useState } from "react";
+function HomePage({ setIsLoggedIn }) {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
+  
+  
+  const openAuth = (mode) => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
+  };
+
+  // Close popup
+  const closeAuth = () => {
+    setIsAuthOpen(false);
+  };
+
   return (
     <div className="home-page">
       <Navbar openAuth={openAuth} />
 
       <section className="hero">
-
-        <Herosection />
-        <FloatingIcons openAuth={openAuth} />
+        <HeroSection openAuth={openAuth} />
+        <FloatingIcons />
         <RoadmapCards />
-
       </section>
 
       {/* Login / Signup Modal */}
       {isAuthOpen && (
-        <OldLogin
+        <AuthModel
           closeAuth={closeAuth}
-          handleAuthSubmit={handleAuthSubmit}
-          handleInputChange={handleInputChange}
-          formData={formData}
+          setIsLoggedIn={setIsLoggedIn}
           authMode={authMode}
           setAuthMode={setAuthMode}
         />
@@ -30,4 +42,5 @@ function HomePage({openAuth,  isAuthOpen,closeAuth,  handleAuthSubmit,  handleIn
     </div>
   );
 }
+
 export default HomePage;

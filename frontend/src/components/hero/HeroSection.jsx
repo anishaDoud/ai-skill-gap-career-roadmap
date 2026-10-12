@@ -1,6 +1,5 @@
 function HeroSection({openAuth}){
     return (<div className="hero-content">
-
           <div className="small-heading">
             Analyze <span>•</span> Learn <span>•</span> Grow <span>•</span>{" "}
             Achieve

@@ -1,9 +1,10 @@
 
 import { useState } from "react";
 import Input from "./components/common/Input.jsx";
+import { useNavigate} from "react-router-dom";
 
 function ResumeContainer() {
-
+  const navigate = useNavigate();
   const [uploadMessage, setUploadMessage] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
@@ -67,6 +68,8 @@ function ResumeContainer() {
     setUploadMessage(
       `Resume uploaded successfully: ${resumeFile.name}`
     );
+    navigate("/result");
+    
   };
 
   const clearResume = () => {   // CLEAR RESUME
